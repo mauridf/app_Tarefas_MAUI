@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="app_Tarefas.Paginas.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="FrameCardStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="LightGray" />
+                <Setter Property="Padding" Value="10" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="HasShadow" Value="True" />
+                <Setter Property="WidthRequest" Value="200" />
+            </Style>
+
+            <Style x:Key="LabelFrameCardStyle" TargetType="Label">
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="Large" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <Style x:Key="CollectionViewFrameStyle" TargetType="Label">
+                <Setter Property="BackgroundColor=" Value="White" />
+                <Setter Property="Padding=" Value="10" />
+                <Setter Property="Margin=" Value="5" />
+                <Setter Property="CornerRadius=" Value="10" />
+                <Setter Property="HorizontalOptions=" Value="FillAndExpand" />
+                <Setter Property="HasShadow=" Value="True" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView Orientation="Horizontal">
+        <HorizontalStackLayout Spacing="10">
+            <VerticalStackLayout>
+                <Frame Style="{StaticResource FrameCardStyle}">
+                    <Label Style="{StaticResource LabelFrameCardStyle}" Text="BACKLOG" />
+                    <CollectionView>
+                        <!--  Template para Itens  -->
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Style="{StaticResource CollectionViewFrameStyle}">
+                                    <StackLayout HorizontalOptions="FillAndExpand">
+                                        <!--  Título do Cartão  -->
+                                        <Label
+                                            Padding="5"
+                                            HorizontalOptions="Start"
+                                            LineBreakMode="TailTruncation"
+                                            Text="{Binding .}"
+                                            WidthRequest="200" />
+                                    </StackLayout>
+
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Frame>
+            </VerticalStackLayout>
+            <VerticalStackLayout>
+                <Frame Style="{StaticResource FrameCardStyle}">
+                    <Label Style="{StaticResource LabelFrameCardStyle}" Text="ANÁLISE" />
+                </Frame>
+            </VerticalStackLayout>
+            <VerticalStackLayout>
+                <Frame Style="{StaticResource FrameCardStyle}">
+                    <Label Style="{StaticResource LabelFrameCardStyle}" Text="PARA FAZER" />
+                </Frame>
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+        <!--<VerticalStackLayout
+            Padding="30,0"
+            Spacing="25"
+            VerticalOptions="Center">
+
+        -->
+        <!--<Button Clicked="NovoClicked" Text="Novo" />-->
+        <!--
+
+            <StackLayout>
+                <Grid
+                    Padding="5"
+                    BackgroundColor="LightGray"
+                    ColumnDefinitions="0.1*,0.3*,0.2*,0.2*,0.2*"
+                    RowDefinitions="Auto">
+                    <Label
+                        Grid.Column="0"
+                        FontAttributes="Bold"
+                        Text="#" />
+                    <Label
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        Text="Titulo" />
+                    <Label
+                        Grid.Column="2"
+                        FontAttributes="Bold"
+                        Text="Usuario" />
+                    <Label
+                        Grid.Column="3"
+                        FontAttributes="Bold"
+                        Text="Status" />
+                    <Label
+                        Grid.Column="4"
+                        FontAttributes="Bold"
+                        Text="Ações" />
+                </Grid>
+
+                <CollectionView x:Name="TarefasCollectionTable">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                Padding="5"
+                                ColumnDefinitions="0.1*,0.3*,0.2*,0.2*,0.2*"
+                                RowDefinitions="Auto">
+                                <Label Grid.Column="0" Text="{Binding Id}" />
+                                <Label Grid.Column="1" Text="{Binding Titulo}" />
+                                <Label Grid.Column="2" Text="{Binding NomeUsuario}" />
+                                <Label Grid.Column="3" Text="{Binding Status}" />
+
+                                <Grid Grid.Column="4">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Button
+                                        Grid.Row="0"
+                                        Command="{Binding Path=BindingContext.NavigateToDetailCommand, Source={x:Reference Name=TarefasCollectionTable}}"
+                                        CommandParameter="{Binding .}"
+                                        Text="Visulizar" />
+
+                                    <Button
+                                        Grid.Row="1"
+                                        Background="Yellow"
+                                        Command="{Binding Path=BindingContext.ChangeCommand, Source={x:Reference Name=TarefasCollectionTable}}"
+                                        CommandParameter="{Binding .}"
+                                        Text="Alterar"
+                                        TextColor="Black" />
+
+                                    <Button
+                                        Grid.Row="2"
+                                        Background="Red"
+                                        Command="{Binding Path=BindingContext.DeleteCommand, Source={x:Reference Name=TarefasCollectionTable}}"
+                                        CommandParameter="{Binding .}"
+                                        Text="Excluir"
+                                        TextColor="White" />
+
+                                </Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </VerticalStackLayout>-->
+    </ScrollView>
+
+</ContentPage>
