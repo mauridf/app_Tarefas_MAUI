@@ -3,58 +3,170 @@
     x:Class="app_Tarefas.Paginas.TarefasDetalhePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Detalhes">
+    Title="Mostrando os Detalhes da Tarefa">
     <ScrollView>
         <VerticalStackLayout Padding="30,0" Spacing="25">
-            <Label
-                SemanticProperties.HeadingLevel="Level1"
-                Style="{StaticResource Headline}"
-                Text="Mostrando os Detalhes da Tarefa" />
-            <StackLayout Padding="20">
-                <!--  ID  -->
-                <StackLayout Orientation="Horizontal">
-                    <Label FontAttributes="Bold" Text="ID: " />
-                    <Label Margin="10,0,0,0" Text="{Binding Tarefa.Id}" />
-                </StackLayout>
+            <Label SemanticProperties.HeadingLevel="Level1" Style="{StaticResource Headline}" />
+            <Frame
+                Padding="15"
+                BackgroundColor="#ffffff"
+                CornerRadius="10"
+                HasShadow="True">
+                <StackLayout Padding="20">
+                    <!--  Título  -->
+                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
+                        <Label FontAttributes="Bold" Text="Título: " />
+                        <Label
+                            x:Name="LabelTitulo"
+                            Margin="10,0,0,0"
+                            Text="{Binding Tarefa.Titulo}" />
+                    </StackLayout>
 
-                <!--  Título  -->
-                <StackLayout Orientation="Horizontal">
-                    <Label FontAttributes="Bold" Text="Título: " />
-                    <Label Margin="10,0,0,0" Text="{Binding Tarefa.Titulo}" />
-                </StackLayout>
+                    <!--  NomeUsuario  -->
+                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
+                        <Label FontAttributes="Bold" Text="Usuario: " />
+                        <Label
+                            x:Name="LabelNomeUsuario"
+                            Margin="10,0,0,0"
+                            Text="{Binding Tarefa.NomeUsuario}" />
+                    </StackLayout>
 
-                <!--  Descrição  -->
-                <StackLayout Orientation="Horizontal">
-                    <Label FontAttributes="Bold" Text="Descrição: " />
-                    <Label Margin="10,0,0,0" Text="{Binding Tarefa.Descricao}" />
-                </StackLayout>
+                    <!--  Status  -->
+                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
+                        <Label FontAttributes="Bold" Text="Status: " />
+                        <Label
+                            x:Name="LabelStatus"
+                            Margin="10,0,0,0"
+                            Text="{Binding Tarefa.Status}" />
+                    </StackLayout>
 
-                <!--  NomeUsuario  -->
-                <StackLayout Orientation="Horizontal">
-                    <Label FontAttributes="Bold" Text="Usuario: " />
-                    <Label Margin="10,0,0,0" Text="{Binding Tarefa.NomeUsuario}" />
-                </StackLayout>
+                    <!--  Descrição  -->
+                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
+                        <Label FontAttributes="Bold" Text="Descrição: " />
+                        <Label
+                            x:Name="LabelDescricao"
+                            Margin="10,0,0,0"
+                            Text="{Binding Tarefa.Descricao}" />
+                    </StackLayout>
 
-                <!--  Status  -->
-                <StackLayout Orientation="Horizontal">
-                    <Label FontAttributes="Bold" Text="Status: " />
-                    <Label Margin="10,0,0,0" Text="{Binding Tarefa.Status}" />
-                </StackLayout>
+                    <!--  DataCriacao  -->
+                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
+                        <Label FontAttributes="Bold" Text="Criado em: " />
+                        <Label
+                            x:Name="LabelDataCriacao"
+                            Margin="10,0,0,0"
+                            Text="{Binding Tarefa.DataCriacao}" />
+                    </StackLayout>
 
-                <!--  DataCriacao  -->
-                <StackLayout Orientation="Horizontal">
-                    <Label FontAttributes="Bold" Text="Criado em: " />
-                    <Label Margin="10,0,0,0" Text="{Binding Tarefa.DataCriacao}" />
-                </StackLayout>
+                    <!--  DataAtualizacao  -->
+                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
+                        <Label FontAttributes="Bold" Text="Atualizado em: " />
+                        <Label
+                            x:Name="LabelDataAtualizacao"
+                            Margin="10,0,0,0"
+                            Text="{Binding Tarefa.DataAtualizacao}" />
+                    </StackLayout>
 
-                <!--  DataAtualizacao  -->
-                <StackLayout Orientation="Horizontal">
-                    <Label FontAttributes="Bold" Text="Atualizado em: " />
-                    <Label Margin="10,0,0,0" Text="{Binding Tarefa.DataAtualizacao}" />
-                </StackLayout>
+                    <BoxView
+                        Margin="0,10"
+                        BackgroundColor="#CCCCCC"
+                        HeightRequest="2" />
 
-                <Button Clicked="VoltarClicked" Text="Voltar" />
-            </StackLayout>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+
+                    <!--  Botão Alterar  -->
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="0,0,0,0"
+                        Background="#FFCC00"
+                        Clicked="IrParaAlteracaoClicked"
+                        Text="Alterar"
+                        TextColor="Black" />
+
+                    <!--  Botão Excluir  -->
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="5,0,0,0"
+                        Background="Red"
+                        Clicked="IrParaExclusaoClicked"
+                        Text="Excluir"
+                        TextColor="White" />
+
+                    <BoxView
+                        Margin="0,10"
+                        BackgroundColor="#CCCCCC"
+                        HeightRequest="2" />
+
+                    <Button
+                        Margin="0,10,0,0"
+                        Background="Gray"
+                        Clicked="VoltarClicked"
+                        HorizontalOptions="FillAndExpand"
+                        Text="Voltar" />
+                </StackLayout>
+            </Frame>
+
+            <Frame
+                Padding="15"
+                BackgroundColor="#ffffff"
+                CornerRadius="10"
+                HasShadow="True">
+                <StackLayout Spacing="10">
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        Text="Comentários" />
+
+                    <!--  Editor para novo comentário  -->
+                    <Editor
+                        x:Name="NovoComentarioEditor"
+                        HeightRequest="50"
+                        Placeholder="Adicione um Comentário..." />
+
+                    <!--  Picker para seleção de Usuário  -->
+                    <Picker
+                        x:Name="UsuarioPicker"
+                        Title="Selecione o Usuário"
+                        ItemDisplayBinding="{Binding Nome}">
+                        <!--  Será definido no CodeBehind  -->
+                    </Picker>
+
+                    <!--  Botão para adicionar o Comentário  -->
+                    <Button Clicked="AdicionarComentarioClicked" Text="Adicionar Comentário" />
+
+                    <!--  Área de exibição dos Comentários  -->
+                    <CollectionView x:Name="ComentariosCollection">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Padding="10" BackgroundColor="#f0f0f0">
+                                    <Label FontAttributes="Italic" Text="{Binding Texto}" />
+                                    <StackLayout
+                                        HorizontalOptions="FillAndExpand"
+                                        Orientation="Horizontal"
+                                        Spacing="5">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            HorizontalOptions="Start"
+                                            Text="{Binding NomeUsuario}" />
+                                        <Label HorizontalOptions="EndAndExpand" Text="{Binding Data, StringFormat='{0:dd/MM/yyyy HH:mm}'}" />
+                                    </StackLayout>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
