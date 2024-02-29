@@ -37,6 +37,7 @@ public partial class TarefasDetalhePage : ContentPage
 
         CarregarComentarios();
         CarregarImagens();
+        CarregarLocalizacoes();
     }
 
     private async void AdicionarComentarioClicked(object sender, EventArgs e)
@@ -72,13 +73,25 @@ public partial class TarefasDetalhePage : ContentPage
         var fotos = await _anexoservico.Query().Where(a => a.TarefaId == Tarefa.Id && !string.IsNullOrEmpty(a.Arquivo)).ToListAsync();
         if(fotos.Count > 0)
         {
-            FotosCollection.IsVisible = true;
+            FotosFrame.IsVisible = true;
             FotosCollection.ItemsSource = fotos;
             return;
         }
-        FotosCollection.IsVisible = false;
+        FotosFrame.IsVisible = false;
     }
 
+    private async void CarregarLocalizacoes()
+    {
+        var localizacoes = await _anexoservico.Query().Where(a => a.TarefaId == Tarefa.Id && string.IsNullOrEmpty(a.Arquivo)).ToListAsync();
+        if (localizacoes.Count > 0)
+        {
+            LocalizacaoFrame.IsVisible = true;
+            LocalizacaoCollection.ItemsSource = localizacoes;
+            return;
+        }
+        LocalizacaoFrame.IsVisible = false;
+    }
+    
     private async void TirarFotoClicked(object sender, EventArgs e)
     {
         try
@@ -147,6 +160,75 @@ public partial class TarefasDetalhePage : ContentPage
         {
             await _tarefaservico.DeleteAsync(Tarefa);
             await Navigation.PopAsync();
+        }
+    }
+
+    private async void LabelLinkGoogleMaps_Tapped(object sender, EventArgs e)
+    {
+        var label = sender as Label;
+        if (label != null)
+        {
+            var url = label.Text.Split('-')[1].Trim();
+            if(!string.IsNullOrEmpty(url))
+            {
+                await Launcher.OpenAsync(new Uri(url));
+            }
+        }
+    }
+
+    private async void GPSClicked(object sender, EventArgs e)
+    {
+        var confirmado = await DisplayAlert("Localização", $"Confirma a captura de sua Localização?", "Localizar", "Cancelar");
+        if (confirmado)
+        {
+            LocalizacaoBotao.Text = "Carregando ...";
+            LocalizacaoBotao.IsEnabled = false;
+
+            try
+            {
+                var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+                if(status != PermissionStatus.Granted)
+                {
+                    status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+                    if(status != PermissionStatus.Granted)
+                    {
+                        await DisplayAlert("Permissão de Localização", "Permissão de acesso a Localização não é permitida.","Ok");
+                        return;
+                    }
+                }
+
+                var request = new GeolocationRequest(GeolocationAccuracy.Medium);
+                var location = await Geolocation.GetLocationAsync(request);
+
+                if (location != null)
+                {
+                    await _anexoservico.IncluirAsync(new Anexo
+                    {
+                        Latitude = location.Latitude,
+                        Longitude = location.Longitude,
+                        TarefaId = Tarefa.Id,
+                    });
+
+                    CarregarLocalizacoes();
+                    await DisplayAlert("Localização", $"Latitude: {location.Latitude} e Longitude: {location.Longitude}","Ok");
+                }
+            }
+            catch (FeatureNotSupportedException fnsex)
+            {
+                await DisplayAlert("Erro", "GPS não suportado nesse dispositivo. - " + fnsex.Message, "Ok");
+            }
+            catch (FeatureNotEnabledException fnex)
+            {
+                await DisplayAlert("Erro", "GPS não está habilitado. - " + fnex.Message, "Ok");
+            }
+            catch (PermissionException pex)
+            {
+                await DisplayAlert("Erro", "Permissão de GPS negada. - " + pex.Message, "Ok");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro", "Não foi possível obter a localização devido a um erro. - " + ex.Message, "OK");
+            }
         }
     }
 }
