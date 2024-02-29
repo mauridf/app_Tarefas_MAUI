@@ -7,6 +7,7 @@
     <ScrollView>
         <VerticalStackLayout Padding="30,0" Spacing="25">
             <Label SemanticProperties.HeadingLevel="Level1" Style="{StaticResource Headline}" />
+            <!--  FRAME DO FORMULÁRIO  -->
             <Frame
                 Padding="15"
                 BackgroundColor="#ffffff"
@@ -109,6 +110,19 @@
 
                     <Button
                         Margin="0,10,0,0"
+                        Background="#6495ED"
+                        Clicked="TirarFotoClicked"
+                        HorizontalOptions="FillAndExpand"
+                        Text="Tirar Foto"
+                        VerticalOptions="End" />
+
+                    <BoxView
+                        Margin="0,10"
+                        BackgroundColor="#CCCCCC"
+                        HeightRequest="2" />
+
+                    <Button
+                        Margin="0,10,0,0"
                         Background="Gray"
                         Clicked="VoltarClicked"
                         HorizontalOptions="FillAndExpand"
@@ -116,6 +130,36 @@
                 </StackLayout>
             </Frame>
 
+            <!--  FRAME DOS ANEXOS  -->
+            <Frame
+                x:Name="FotosFrame"
+                Margin="0,20,0,0"
+                Padding="15"
+                BackgroundColor="#ffffff"
+                CornerRadius="10"
+                HasShadow="True">
+                <StackLayout Spacing="5">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        Text="Fotos" />
+                    <!--  ÁREA DE EXIBIÇÃO DAS IMAGENS  -->
+                    <CollectionView x:Name="FotosCollection">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Margin="0,20,0,0" Padding="2">
+                                    <Image
+                                        Aspect="AspectFill"
+                                        HorizontalOptions="FillAndExpand"
+                                        Source="{Binding Arquivo}" />
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+
+            <!--  FRAME DO COMENTÁRIO  -->
             <Frame
                 Padding="15"
                 BackgroundColor="#ffffff"
