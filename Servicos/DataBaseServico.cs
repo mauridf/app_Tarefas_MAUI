@@ -32,9 +32,14 @@ namespace app_Tarefas.Servicos
             return _database.DeleteAsync(item);
         }
 
-        public Task<List<T>> TodosAsync() 
-        { 
+        public Task<List<T>> TodosAsync()
+        {
             return _database.Table<T>().ToListAsync();
+        }
+
+        public AsyncTableQuery<T> Query()
+        {
+            return _database.Table<T>();
         }
 
         public Task<int> QuantidadeAsync()

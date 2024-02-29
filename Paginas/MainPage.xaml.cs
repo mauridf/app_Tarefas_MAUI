@@ -22,7 +22,7 @@ namespace app_Tarefas.Paginas
             NavigateToDetailCommand = new Command<Tarefa>(async (tarefa) => await NavigateToDetail(tarefa));
             DeleteCommand = new Command<Tarefa>(ExecuteDeleteCommand);
             ChangeCommand = new Command<Tarefa>(async (tarefa) => await NavigateToChange(tarefa));
-            //TarefasCollectionTable.BindingContext = this;
+            //CardBacklog.BindingContext = this;
 
             CarregarTarefas();
         }
@@ -55,13 +55,21 @@ namespace app_Tarefas.Paginas
 
         private async void CarregarTarefas()
         {
-            var tarefas = await _tarefaServico.TodosAsync();
-            //TarefasCollectionTable.ItemsSource = tarefas;
+            CardBacklog.ItemsSource = await _tarefaServico.Query().Where(t => t.Status == Status.Backlog).ToArrayAsync();
+            CardAnalise.ItemsSource = await _tarefaServico.Query().Where(t => t.Status == Status.Analise).ToArrayAsync();
+            CardParaFazer.ItemsSource = await _tarefaServico.Query().Where(t => t.Status == Status.ParaFazer).ToArrayAsync();
+            CardDesenvolvimento.ItemsSource = await _tarefaServico.Query().Where(t => t.Status == Status.Desenvolvimento).ToArrayAsync();
+            CardFeito.ItemsSource = await _tarefaServico.Query().Where(t => t.Status == Status.Feito).ToArrayAsync();
         }
 
         private async void NovoClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new TarefasSalvarPage());
+            var botao = sender as Button;
+            if(sender != null)
+            {
+                var status = (Enums.Status)botao.CommandParameter;
+                await Navigation.PushAsync(new TarefasSalvarPage(new Tarefa { Status = status }));
+            }
         }
     }
 }

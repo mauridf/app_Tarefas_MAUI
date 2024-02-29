@@ -11,20 +11,23 @@ public partial class TarefasSalvarPage : ContentPage
 
     DataBaseServico<Tarefa> _tarefaServico;
 
-    public TarefasSalvarPage(Tarefa tarefa = null)
+    public TarefasSalvarPage(Tarefa tarefa)
 	{
         InitializeComponent();
 
         _tarefaServico = new DataBaseServico<Tarefa>(Db.DB_PATH);
 
-        Tarefa = tarefa ?? new Tarefa();
+        var status = tarefa.Status;
+        var usuario = tarefa.Usuario;
+
+        Tarefa = tarefa;
         BindingContext = tarefa;
 
         StatusPicker.ItemsSource = Enum.GetValues(typeof(Status)).Cast<Status>().ToList();
         UsuarioPicker.ItemsSource = UsuarioServico.Instancia().Todos();
 
-        StatusPicker.SelectedItem = Tarefa.Status ?? Status.Backlog;
-        UsuarioPicker.SelectedItem = Tarefa.Usuario;
+        StatusPicker.SelectedItem = status;
+        UsuarioPicker.SelectedItem = usuario;
     }
 
     private async void VoltarClicked(object sender, EventArgs e)
