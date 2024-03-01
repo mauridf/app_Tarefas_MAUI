@@ -1,0 +1,1 @@
+dotnet publish app_Tarefas.csproj -f net7.0-android -c release -o ./ReleaseOutput
