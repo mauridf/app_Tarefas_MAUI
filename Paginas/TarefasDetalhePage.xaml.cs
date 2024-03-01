@@ -1,234 +1,239 @@
-using app_Tarefas.Models;
-using app_Tarefas.Servicos;
-using app_Tarefas.Constantes;
+Ôªøusing Tarefas.Constantes;
+using Tarefas.Models;
+using Tarefas.Servicos;
 
-namespace app_Tarefas.Paginas;
+namespace Tarefas.Paginas;
 
 public partial class TarefasDetalhePage : ContentPage
 {
 	public Tarefa Tarefa { get; set; }
-
-    private DataBaseServico<Tarefa> _tarefaservico;
-
-    private DataBaseServico<Comentario> _comentarioservico;
-
-    private DataBaseServico<Anexo> _anexoservico;
-    public TarefasDetalhePage(Tarefa tarefa)
+	private DatabaseServico<Tarefa> _tarefaServico;
+	private DatabaseServico<Comentario> _comentarioServico;
+	private DatabaseServico<Anexo> _anexoServico;
+	public TarefasDetalhePage(Tarefa tarefa)
 	{
 		InitializeComponent();
 		Tarefa = tarefa;
-		BindingContext = this;
-        _tarefaservico = new DataBaseServico<Tarefa>(Db.DB_PATH);
-        _comentarioservico = new DataBaseServico<Comentario>(Db.DB_PATH);
-        _anexoservico = new DataBaseServico<Anexo>(Db.DB_PATH);
+        BindingContext = this;
+		_tarefaServico = new DatabaseServico<Tarefa>(Db.DB_PATH);
+		_comentarioServico = new DatabaseServico<Comentario>(Db.DB_PATH);
+		_anexoServico = new DatabaseServico<Anexo>(Db.DB_PATH);
+	}
 
-    }
-
-    protected override void OnAppearing()
+	protected override void OnAppearing()
     {
         base.OnAppearing();
-        LabelTitulo.Text = Tarefa.Titulo;
-        LabelNomeUsuario.Text = Tarefa.NomeUsuario;
-        LabelStatus.Text = Tarefa.Status.ToString();
-        LabelDescricao.Text = Tarefa.Descricao;
-        LabelDataCriacao.Text = Tarefa.DataCriacao.ToString();
-        LabelDataAtualizacao.Text = Tarefa.DataAtualizacao.ToString();
-        UsuarioPicker.ItemsSource = UsuarioServico.Instancia().Todos();
+        
+		LabelTitulo.Text = Tarefa.Titulo;
+		LabelNomeUsuario.Text = Tarefa.NomeUsuario;
+		LabelDataCriacao.Text = Tarefa.DataCriacao.ToString();
+		LabelDataAtualizacao.Text = Tarefa.DataAtualizacao.ToString();
+		LabelStatus.Text = Tarefa.Status.ToString();
+		LabelDescricao.Text = Tarefa.Descricao;
+        UsuarioPicker.ItemsSource = UsuariosServico.Instancia().Todos();
 
-        CarregarComentarios();
-        CarregarImagens();
-        CarregarLocalizacoes();
+		CarregarComentarios();
+		CarregarImagens();
+		CarregarLocalizacoes();
     }
 
-    private async void AdicionarComentarioClicked(object sender, EventArgs e)
-    {
-        if(string.IsNullOrEmpty(NovoComentarioEditor.Text) || UsuarioPicker.SelectedItem == null)
-        {
-            await DisplayAlert("Erro", "Digite o coment·rio e Selecione o Usu·rio","Fechar");
-            return;
-        }
+	private async void CarregarImagens()
+	{
+		var fotos = await _anexoServico.Query().Where(a => a.TarefaId == Tarefa.Id && !string.IsNullOrEmpty(a.Arquivo)).ToListAsync();
+		if(fotos.Count > 0)
+		{
+			FotosFrame.IsVisible = true;
+			FotosCollection.ItemsSource = fotos;
+			return;
+		}
 
-        var usuario = (Usuario)UsuarioPicker.SelectedItem;
+		FotosFrame.IsVisible = false;
+	}
 
-        await _comentarioservico.IncluirAsync(new Comentario
-        {
-            UsuarioId = usuario.Id,
-            TarefaId = Tarefa.Id,
-            Texto = NovoComentarioEditor.Text
-        });
+	private async void CarregarLocalizacoes()
+	{
+		var localizacoes = await _anexoServico.Query().Where(a => a.TarefaId == Tarefa.Id && string.IsNullOrEmpty(a.Arquivo)).ToListAsync();
+		if(localizacoes.Count > 0)
+		{
+			LocalizacaoFrame.IsVisible = true;
+			LocalizacaoCollection.ItemsSource = localizacoes;
+			return;
+		}
 
-        NovoComentarioEditor.Text = string.Empty;
-        UsuarioPicker.SelectedItem = -1;
-
-        CarregarComentarios();
-    }
-
-    private async void CarregarComentarios()
-    {
-        ComentariosCollection.ItemsSource = await _comentarioservico.Query().Where(c => c.TarefaId == Tarefa.Id).ToListAsync();
-    }
-
-    private async void CarregarImagens()
-    {
-        var fotos = await _anexoservico.Query().Where(a => a.TarefaId == Tarefa.Id && !string.IsNullOrEmpty(a.Arquivo)).ToListAsync();
-        if(fotos.Count > 0)
-        {
-            FotosFrame.IsVisible = true;
-            FotosCollection.ItemsSource = fotos;
-            return;
-        }
-        FotosFrame.IsVisible = false;
-    }
-
-    private async void CarregarLocalizacoes()
-    {
-        var localizacoes = await _anexoservico.Query().Where(a => a.TarefaId == Tarefa.Id && string.IsNullOrEmpty(a.Arquivo)).ToListAsync();
-        if (localizacoes.Count > 0)
-        {
-            LocalizacaoFrame.IsVisible = true;
-            LocalizacaoCollection.ItemsSource = localizacoes;
-            return;
-        }
-        LocalizacaoFrame.IsVisible = false;
-    }
-    
-    private async void TirarFotoClicked(object sender, EventArgs e)
-    {
-        try
-        {
-            //Verifica se a c‚mera est· disponÌvel no dispositivo
-            if (MediaPicker.Default.IsCaptureSupported)
-            {
-                //Tira uma foto e obtem o arquivo resultante
-                FileResult photo = await MediaPicker.Default.CapturePhotoAsync();
-
-                if (photo != null)
-                {  
-                    //Cria um stream a partir do arquivo da foto
-                    using Stream stream = await photo.OpenReadAsync();
-
-                    //Define o DiretÛrio e o nome aonde a foto ser· salva
-                    string directory = FileSystem.AppDataDirectory;
-                    string filename = Path.Combine(directory, $"{DateTime.Now.ToString("ddMMyyyy_hhmmss")}.jpg");
-
-                    //Salva a foto no diretÛrio definido
-                    using FileStream fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write);
-                    await stream.CopyToAsync(fileStream);
-
-                    await _anexoservico.IncluirAsync(new Anexo
-                    {
-                        Arquivo = filename,
-                        TarefaId = Tarefa.Id,
-                    });
-
-                    CarregarImagens();
-                }
-            }
-            else
-            {
-                await DisplayAlert("Erro", "A Captura de Fotos n„o È suportada nesse dispositivo", "Fechar");
-            }
-        }
-        catch (FeatureNotSupportedException fnsex)
-        {
-            await DisplayAlert("Erro", "A Captura de Fotos n„o È suportada nesse dispositivo. - " + fnsex.Message, "Ok");
-        }
-        catch(PermissionException pex)
-        {
-            await DisplayAlert("Erro", "Permiss„o para Acessar a C‚mera n„o concesida. - " + pex.Message, "Ok");
-        }
-        catch(Exception ex)
-        {
-            await DisplayAlert("Erro", $"Ocorreu um erro: {ex.Message}", "Ok");
-        }
-    }
-
-    private async void VoltarClicked(object sender, EventArgs e)
+		LocalizacaoFrame.IsVisible = false;
+	}
+	
+	private async void CarregarComentarios()
+	{
+		ComentariosCollection.ItemsSource = await _comentarioServico.Query().Where(c => c.TarefaId == Tarefa.Id).ToListAsync();
+	}
+	
+	private async void VoltarClicked(object sender, EventArgs e)
     {
         await Navigation.PopAsync();
     }
 
-    private async void IrParaAlteracaoClicked(object sender, EventArgs e)
+	private async void IrParaAlteracaoClicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new TarefasSalvarPage(Tarefa));
     }
 
-    private async void IrParaExclusaoClicked(object sender, EventArgs e)
+	private async void TirarFotoClicked(object sender, EventArgs e)
+	{
+		try
+		{
+			// Verifica se a c√¢mera est√° dispon√≠vel no dispositivo
+			if (MediaPicker.Default.IsCaptureSupported)
+			{
+				// Tira uma foto e obt√©m o arquivo resultante
+				FileResult photo = await MediaPicker.Default.CapturePhotoAsync();
+
+				if (photo != null)
+				{
+					// Cria um stream a partir do arquivo da foto
+					using Stream stream = await photo.OpenReadAsync();
+
+					// Define o diret√≥rio e o nome do arquivo onde a foto ser√° salva
+					string directory = FileSystem.AppDataDirectory;
+					string filename = Path.Combine(directory, $"{DateTime.Now.ToString("ddMMyyyy_hhmmss")}.jpg");
+
+					// Salva a foto no diret√≥rio definido
+					using FileStream fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write);
+					await stream.CopyToAsync(fileStream);
+
+					await _anexoServico.IncluirAsync(new Anexo
+					{
+						Arquivo = filename,
+						TarefaId = Tarefa.Id,
+					});
+
+					CarregarImagens();
+				}
+			}
+			else
+			{
+				await DisplayAlert("Erro", "A captura de fotos n√£o √© suportada neste dispositivo.", "OK");
+			}
+		}
+		catch (FeatureNotSupportedException fnsEx)
+		{
+			await DisplayAlert("Erro", "A captura de fotos n√£o √© suportada neste dispositivo. - " + fnsEx.Message, "OK");
+		}
+		catch (PermissionException pEx)
+		{
+			await DisplayAlert("Erro", "Permiss√£o para acessar a c√¢mera n√£o concedida. - " + pEx.Message, "OK");
+		}
+		catch (Exception ex)
+		{
+			await DisplayAlert("Erro", $"Ocorreu um erro: {ex.Message}", "OK");
+		}
+	}
+
+	private async void ExcluirClicked(object sender, EventArgs e)
     {
-        bool confirm = await DisplayAlert("ConfirmaÁ„o", "Deseja Excluir essa Tarefa?", "Sim", "N„o");
-        if (confirm)
-        {
-            await _tarefaservico.DeleteAsync(Tarefa);
-            await Navigation.PopAsync();
-        }
+        bool confirm = await DisplayAlert("Confirma√ß√£o", "Deseja excluir esta tarefa?", "Sim", "N√£o");
+		if (confirm)
+		{
+			await _tarefaServico.DeleteAsync(Tarefa);
+			await Navigation.PopAsync();
+		}
     }
 
-    private async void LabelLinkGoogleMaps_Tapped(object sender, EventArgs e)
-    {
-        var label = sender as Label;
-        if (label != null)
-        {
-            var url = label.Text.Split('-')[1].Trim();
-            if(!string.IsNullOrEmpty(url))
-            {
-                await Launcher.OpenAsync(new Uri(url));
-            }
-        }
-    }
+	private async void LabelLinkGoogleMaps_Tapped(object sender, EventArgs e)
+	{
+		var label = sender as Label;
+		if (label != null)
+		{
+			var url = label.Text.Split('-')[1].Trim();
+			if (!string.IsNullOrWhiteSpace(url))
+			{
+				await Launcher.OpenAsync(new Uri(url));
+			}
+		}
+	}
 
-    private async void GPSClicked(object sender, EventArgs e)
-    {
-        var confirmado = await DisplayAlert("LocalizaÁ„o", $"Confirma a captura de sua LocalizaÁ„o?", "Localizar", "Cancelar");
-        if (confirmado)
-        {
-            LocalizacaoBotao.Text = "Carregando ...";
-            LocalizacaoBotao.IsEnabled = false;
+	private async void GPSClicked(object sender, EventArgs e)
+	{
+		var confirmado = await DisplayAlert("Localiza√ß√£o", $"Confirma a capitura de sua localiza√ß√£o?", "Localizar", "Cancelar");
+		if(confirmado)
+		{
+			LocalizacaoButton.Text = "Carregando...";
+			LocalizacaoButton.IsEnabled = false;
 
-            try
-            {
-                var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-                if(status != PermissionStatus.Granted)
-                {
-                    status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
-                    if(status != PermissionStatus.Granted)
-                    {
-                        await DisplayAlert("Permiss„o de LocalizaÁ„o", "Permiss„o de acesso a LocalizaÁ„o n„o È permitida.","Ok");
-                        return;
-                    }
-                }
+			try
+			{
+				var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+				if (status != PermissionStatus.Granted)
+				{
+					status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+					if (status != PermissionStatus.Granted)
+					{
+						await DisplayAlert("Permiss√£o de Localiza√ß√£o", "Permiss√£o de acesso √† localiza√ß√£o n√£o concedida.", "OK");
+						return;
+					}
+				}
 
-                var request = new GeolocationRequest(GeolocationAccuracy.Medium);
-                var location = await Geolocation.GetLocationAsync(request);
+				var request = new GeolocationRequest(GeolocationAccuracy.Medium);
+				var location = await Geolocation.GetLocationAsync(request);
 
-                if (location != null)
-                {
-                    await _anexoservico.IncluirAsync(new Anexo
-                    {
-                        Latitude = location.Latitude,
-                        Longitude = location.Longitude,
-                        TarefaId = Tarefa.Id,
-                    });
+				if (location != null)
+				{
+					await _anexoServico.IncluirAsync(new Anexo
+					{
+						Latitude = location.Latitude,
+						Longitude = location.Longitude,
+						TarefaId = Tarefa.Id,
+					});
 
-                    CarregarLocalizacoes();
-                    await DisplayAlert("LocalizaÁ„o", $"Latitude: {location.Latitude} e Longitude: {location.Longitude}","Ok");
-                }
-            }
-            catch (FeatureNotSupportedException fnsex)
-            {
-                await DisplayAlert("Erro", "GPS n„o suportado nesse dispositivo. - " + fnsex.Message, "Ok");
-            }
-            catch (FeatureNotEnabledException fnex)
-            {
-                await DisplayAlert("Erro", "GPS n„o est· habilitado. - " + fnex.Message, "Ok");
-            }
-            catch (PermissionException pex)
-            {
-                await DisplayAlert("Erro", "Permiss„o de GPS negada. - " + pex.Message, "Ok");
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Erro", "N„o foi possÌvel obter a localizaÁ„o devido a um erro. - " + ex.Message, "OK");
-            }
-        }
-    }
+					CarregarLocalizacoes();
+
+					await DisplayAlert("Localiza√ß√£o", $"Latitude: {location.Latitude}, Longitude: {location.Longitude}", "OK");
+				}
+			}
+			catch (FeatureNotSupportedException fnsEx)
+			{
+				await DisplayAlert("Erro", "GPS n√£o suportado neste dispositivo. - " + fnsEx.Message, "OK");
+			}
+			catch (FeatureNotEnabledException fneEx)
+			{
+				await DisplayAlert("Erro", "GPS n√£o est√° habilitado. - " + fneEx.Message, "OK");
+			}
+			catch (PermissionException pEx)
+			{
+				await DisplayAlert("Erro", "Permiss√£o de GPS negada. - " + pEx.Message, "OK");
+			}
+			catch (Exception ex)
+			{
+				await DisplayAlert("Erro", "N√£o foi poss√≠vel obter a localiza√ß√£o. - " + ex.Message, "OK");
+			}
+			finally
+			{
+				LocalizacaoButton.Text = "Pegar Coordenadas do GPS";
+				LocalizacaoButton.IsEnabled = true;
+			}
+		}
+	}
+
+	private async void AdicionarComentarioClicked(object sender, EventArgs e)
+	{
+		if(string.IsNullOrEmpty(NovoComentarioEditor.Text) || UsuarioPicker.SelectedIndex == -1)
+		{
+			await DisplayAlert("Erro", "Digite o coment√°rio e selecione o usu√°rio", "Fechar");
+			return;
+		}
+
+		var usuario = (Usuario)UsuarioPicker.SelectedItem;
+
+		await _comentarioServico.IncluirAsync(new Comentario {
+			UsuarioId = usuario.Id,
+			TarefaId = Tarefa.Id,
+			Texto = NovoComentarioEditor.Text
+		 });
+
+		 NovoComentarioEditor.Text = string.Empty;
+		 UsuarioPicker.SelectedIndex = -1;
+
+		 CarregarComentarios();
+	}
 }
+

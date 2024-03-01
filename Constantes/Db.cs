@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace Tarefas.Constantes;
 
-namespace app_Tarefas.Constantes
+public struct Db
 {
-    public struct Db
-    {
-        public static string DB_PATH
+    public static string DB_PATH 
+    { 
+        get
         {
-            get
-            {
-                return Path.Combine(FileSystem.AppDataDirectory, "tarefas.db3");
-            }
+            return Path.Combine(FileSystem.AppDataDirectory, "tarefas.db3"); 
         }
     }
 }

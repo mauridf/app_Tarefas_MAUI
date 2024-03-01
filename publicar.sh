@@ -1,1 +1,1 @@
-dotnet publish app_Tarefas.csproj -f net7.0-android -c release -o ./ReleaseOutput
+dotnet publish tarefas.csproj -f net8.0-android -c Release -o ./ReleaseOutput

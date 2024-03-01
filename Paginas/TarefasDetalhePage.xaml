@@ -1,166 +1,117 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    x:Class="app_Tarefas.Paginas.TarefasDetalhePage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Mostrando os Detalhes da Tarefa">
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Tarefas.Paginas.TarefasDetalhePage"
+             Title="Mostrando detalhes da Tarefa">
+
     <ScrollView>
-        <VerticalStackLayout Padding="30,0" Spacing="25">
-            <Label SemanticProperties.HeadingLevel="Level1" Style="{StaticResource Headline}" />
-            <!--  FRAME DO FORMULÁRIO  -->
-            <Frame
-                Padding="15"
-                BackgroundColor="#ffffff"
-                CornerRadius="10"
-                HasShadow="True">
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            
+            <Frame CornerRadius="10" Padding="15" HasShadow="True" BackgroundColor="#ffffff">
                 <StackLayout Padding="20">
-                    <!--  Título  -->
-                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
-                        <Label FontAttributes="Bold" Text="Título: " />
-                        <Label
-                            x:Name="LabelTitulo"
-                            Margin="10,0,0,0"
-                            Text="{Binding Tarefa.Titulo}" />
+                
+                    <!-- Título -->
+                    <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                        <Label Text="Título:" FontAttributes="Bold" />
+                        <Label x:Name="LabelTitulo" Text="{Binding Tarefa.Titulo}" Margin="10,0,0,0"/>
                     </StackLayout>
 
-                    <!--  NomeUsuario  -->
-                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
-                        <Label FontAttributes="Bold" Text="Usuario: " />
-                        <Label
-                            x:Name="LabelNomeUsuario"
-                            Margin="10,0,0,0"
-                            Text="{Binding Tarefa.NomeUsuario}" />
+                    <!-- Nome do Usuário -->
+                    <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                        <Label Text="Usuário:" FontAttributes="Bold" />
+                        <Label x:Name="LabelNomeUsuario" Text="{Binding Tarefa.NomeUsuario}" Margin="10,0,0,0"/>
                     </StackLayout>
 
-                    <!--  Status  -->
-                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
-                        <Label FontAttributes="Bold" Text="Status: " />
-                        <Label
-                            x:Name="LabelStatus"
-                            Margin="10,0,0,0"
-                            Text="{Binding Tarefa.Status}" />
+                    <!-- Data de Criação -->
+                    <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                        <Label Text="Criado em:" FontAttributes="Bold" />
+                        <Label x:Name="LabelDataCriacao" Text="{Binding Tarefa.DataCriacao, StringFormat='{0:dd/MM/yyyy HH:mm}'}" Margin="10,0,0,0"/>
                     </StackLayout>
 
-                    <!--  Descrição  -->
-                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
-                        <Label FontAttributes="Bold" Text="Descrição: " />
-                        <Label
-                            x:Name="LabelDescricao"
-                            Margin="10,0,0,0"
-                            Text="{Binding Tarefa.Descricao}" />
+                    <!-- Data de Atualização -->
+                    <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                        <Label Text="Atualizado em:" FontAttributes="Bold" />
+                        <Label x:Name="LabelDataAtualizacao" Text="{Binding Tarefa.DataAtualizacao, StringFormat='{0:dd/MM/yyyy HH:mm}'}" Margin="10,0,0,0"/>
                     </StackLayout>
 
-                    <!--  DataCriacao  -->
-                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
-                        <Label FontAttributes="Bold" Text="Criado em: " />
-                        <Label
-                            x:Name="LabelDataCriacao"
-                            Margin="10,0,0,0"
-                            Text="{Binding Tarefa.DataCriacao}" />
+                    <!-- Status -->
+                    <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                        <Label Text="Status:" FontAttributes="Bold" />
+                        <Label x:Name="LabelStatus" Text="{Binding Tarefa.Status}" Margin="10,0,0,0"/>
                     </StackLayout>
 
-                    <!--  DataAtualizacao  -->
-                    <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
-                        <Label FontAttributes="Bold" Text="Atualizado em: " />
-                        <Label
-                            x:Name="LabelDataAtualizacao"
-                            Margin="10,0,0,0"
-                            Text="{Binding Tarefa.DataAtualizacao}" />
+                    <!-- Descrição -->
+                    <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                        <Label Text="Descrição:" FontAttributes="Bold" />
+                        <Label x:Name="LabelDescricao" Text="{Binding Tarefa.Descricao}" Margin="10,0,0,0"/>
                     </StackLayout>
 
-                    <BoxView
-                        Margin="0,10"
-                        BackgroundColor="#CCCCCC"
-                        HeightRequest="2" />
+                    <BoxView HeightRequest="2" BackgroundColor="#CCCCCC" Margin="0,10" />
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/> <!-- Para os botões Alterar e Excluir -->
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*"/> <!-- 50% para o botão Alterar -->
+                            <ColumnDefinition Width="*"/> <!-- 50% para o botão Excluir -->
                         </Grid.ColumnDefinitions>
+
+                        <!-- Botão Alterar -->
+                        <Button Grid.Row="0" Grid.Column="0"
+                                Text="Alterar" 
+                                BackgroundColor="#FFCC00"
+                                TextColor="Black"
+                                Clicked="IrParaAlteracaoClicked"
+                                Margin="0,0,0,0"/> <!-- Margem à direita para espaçamento entre os botões -->
+
+                        <!-- Botão Excluir -->
+                        <Button Grid.Row="0" Grid.Column="1"
+                                Text="Excluir" 
+                                BackgroundColor="Red"
+                                TextColor="White"
+                                Clicked="ExcluirClicked"
+                                Margin="5,0,0,0"/> <!-- Margem à esquerda para espaçamento entre os botões -->
                     </Grid>
 
-                    <!--  Botão Alterar  -->
-                    <Button
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="0,0,0,0"
-                        Background="#FFCC00"
-                        Clicked="IrParaAlteracaoClicked"
-                        Text="Alterar"
-                        TextColor="Black" />
-
-                    <!--  Botão Excluir  -->
-                    <Button
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="5,0,0,0"
-                        Background="Red"
-                        Clicked="IrParaExclusaoClicked"
-                        Text="Excluir"
-                        TextColor="White" />
-
-                    <BoxView
-                        Margin="0,10"
-                        BackgroundColor="#CCCCCC"
-                        HeightRequest="2" />
-
-                    <Button
-                        Margin="0,10,0,0"
-                        Background="#6495ED"
-                        Clicked="TirarFotoClicked"
+                    <Button Text="Tirar foto"
+                        BackgroundColor="#6495ED"
+                        Clicked="TirarFotoClicked" 
                         HorizontalOptions="FillAndExpand"
-                        Text="Tirar Foto"
-                        VerticalOptions="End" />
+                        VerticalOptions="End"
+                        Margin="0,10,0,0" />
 
-                    <Button
-                        x:Name="LocalizacaoBotao"
-                        Margin="0,10,0,0"
-                        Background="#2F4F4F"
-                        Clicked="GPSClicked"
+                    <Button x:Name="LocalizacaoButton" Text="Pegar Coordenadas do GPS"
+                        BackgroundColor="#2F4F4F"
+                        Clicked="GPSClicked" 
                         HorizontalOptions="FillAndExpand"
-                        Text="Pegar Coordenadas do GPS"
-                        VerticalOptions="End" />
+                        VerticalOptions="End"
+                        Margin="0,10,0,0" />
 
-                    <BoxView
-                        Margin="0,10"
-                        BackgroundColor="#CCCCCC"
-                        HeightRequest="2" />
-
-                    <Button
-                        Margin="0,10,0,0"
-                        Background="Gray"
-                        Clicked="VoltarClicked"
-                        HorizontalOptions="FillAndExpand"
-                        Text="Voltar" />
+                    <BoxView HeightRequest="2" BackgroundColor="#CCCCCC" Margin="0,10" />
+                    
+                    <!-- Botão Voltar -->
+                    <Button Text="Voltar"
+                        BackgroundColor="Gray"
+                        Clicked="VoltarClicked" 
+                        HorizontalOptions="FillAndExpand" />
                 </StackLayout>
             </Frame>
 
-            <!--  FRAME DOS ANEXOS  -->
-            <Frame
-                x:Name="FotosFrame"
-                Margin="0,20,0,0"
-                Padding="15"
-                BackgroundColor="#ffffff"
-                CornerRadius="10"
-                HasShadow="True">
+            <Frame x:Name="FotosFrame" CornerRadius="10" Padding="15" HasShadow="True" Margin="0,20,0,0" BackgroundColor="#ffffff">
                 <StackLayout Spacing="5">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="Medium"
-                        Text="Fotos" />
-                    <!--  ÁREA DE EXIBIÇÃO DAS IMAGENS  -->
+                    <Label Text="Fotos" FontAttributes="Bold" FontSize="Medium" />
+
+                    <!-- Área de exibição dos comentários -->
                     <CollectionView x:Name="FotosCollection">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <StackLayout Margin="0,20,0,0" Padding="2">
-                                    <Image
+                                <StackLayout Padding="2" Margin="0,0,0,20">
+                                    <Image Source="{Binding Arquivo}"
                                         Aspect="AspectFill"
-                                        HorizontalOptions="FillAndExpand"
-                                        Source="{Binding Arquivo}" />
+                                        HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
@@ -168,32 +119,23 @@
                 </StackLayout>
             </Frame>
 
-            <!--  FRAME DE LOCALIZAÇÃO  -->
-            <Frame
-                x:Name="LocalizacaoFrame"
-                Margin="0,20,0,0"
-                Padding="15"
-                BackgroundColor="#ffffff"
-                CornerRadius="10"
-                HasShadow="True">
+            <Frame x:Name="LocalizacaoFrame" CornerRadius="10" Padding="15" HasShadow="True" Margin="0,20,0,0" BackgroundColor="#ffffff">
                 <StackLayout Spacing="5">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="Medium"
-                        Text="Localização" />
-                    <!--  ÁREA DE EXIBIÇÃO DO GPS  -->
+                    <Label Text="Localização" FontAttributes="Bold" FontSize="Medium" />
+
+                    <!-- Área de exibição dos comentários -->
                     <CollectionView x:Name="LocalizacaoCollection">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <StackLayout Margin="0,20,0,0" Padding="2">
+                                <StackLayout Padding="2" Margin="0,20,0,0">
                                     <Label x:Name="LabelLinkGoogleMaps" FontAttributes="Italic">
                                         <Label.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="LabelLinkGoogleMaps_Tapped" />
+                                            <TapGestureRecognizer Tapped="LabelLinkGoogleMaps_Tapped"/>
                                         </Label.GestureRecognizers>
                                         <Label.Text>
-                                            <MultiBinding StringFormat="AbrirMapa - http://maps.google.com/?q={0},{1}">
-                                                <Binding Path="Latitude" />
-                                                <Binding Path="Longitude" />
+                                            <MultiBinding StringFormat="Abrir Mapa - http://maps.google.com/?q={0},{1}">
+                                                <Binding Path="Latitude"/>
+                                                <Binding Path="Longitude"/>
                                             </MultiBinding>
                                         </Label.Text>
                                     </Label>
@@ -203,51 +145,31 @@
                     </CollectionView>
                 </StackLayout>
             </Frame>
-            <!--  FRAME DO COMENTÁRIO  -->
-            <Frame
-                Padding="15"
-                BackgroundColor="#ffffff"
-                CornerRadius="10"
-                HasShadow="True">
+            
+            <Frame CornerRadius="10" Padding="15" HasShadow="True" BackgroundColor="#ffffff">
                 <StackLayout Spacing="10">
+                    <Label Text="Comentários" FontAttributes="Bold" FontSize="Medium" />
 
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="Medium"
-                        Text="Comentários" />
+                    <!-- Editor para novo comentário -->
+                    <Editor x:Name="NovoComentarioEditor" Placeholder="Adicione um comentário..." HeightRequest="50" />
 
-                    <!--  Editor para novo comentário  -->
-                    <Editor
-                        x:Name="NovoComentarioEditor"
-                        HeightRequest="50"
-                        Placeholder="Adicione um Comentário..." />
-
-                    <!--  Picker para seleção de Usuário  -->
-                    <Picker
-                        x:Name="UsuarioPicker"
-                        Title="Selecione o Usuário"
-                        ItemDisplayBinding="{Binding Nome}">
-                        <!--  Será definido no CodeBehind  -->
+                    <!-- Picker para seleção de usuário -->
+                    <Picker x:Name="UsuarioPicker" Title="Selecione o usuário" ItemDisplayBinding="{Binding Nome}">
+                        <!-- ItemsSource será definido no code-behind -->
                     </Picker>
 
-                    <!--  Botão para adicionar o Comentário  -->
-                    <Button Clicked="AdicionarComentarioClicked" Text="Adicionar Comentário" />
+                    <!-- Botão para adicionar o comentário -->
+                    <Button Text="Adicionar Comentário" Clicked="AdicionarComentarioClicked" />
 
-                    <!--  Área de exibição dos Comentários  -->
+                    <!-- Área de exibição dos comentários -->
                     <CollectionView x:Name="ComentariosCollection">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <StackLayout Padding="10" BackgroundColor="#f0f0f0">
-                                    <Label FontAttributes="Italic" Text="{Binding Texto}" />
-                                    <StackLayout
-                                        HorizontalOptions="FillAndExpand"
-                                        Orientation="Horizontal"
-                                        Spacing="5">
-                                        <Label
-                                            FontAttributes="Bold"
-                                            HorizontalOptions="Start"
-                                            Text="{Binding NomeUsuario}" />
-                                        <Label HorizontalOptions="EndAndExpand" Text="{Binding Data, StringFormat='{0:dd/MM/yyyy HH:mm}'}" />
+                                    <Label Text="{Binding Texto}" FontAttributes="Italic"/>
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="5">
+                                        <Label Text="{Binding NomeUsuario}" HorizontalOptions="Start" FontAttributes="Bold"/>
+                                        <Label Text="{Binding Data, StringFormat='{0:dd/MM/yyyy HH:mm}'}" HorizontalOptions="EndAndExpand"/>
                                     </StackLayout>
                                 </StackLayout>
                             </DataTemplate>
@@ -255,6 +177,8 @@
                     </CollectionView>
                 </StackLayout>
             </Frame>
+            
         </VerticalStackLayout>
     </ScrollView>
+
 </ContentPage>

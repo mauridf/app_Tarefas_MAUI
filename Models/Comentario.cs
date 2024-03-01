@@ -1,44 +1,40 @@
-﻿using app_Tarefas.Enums;
-using app_Tarefas.Servicos;
 using SQLite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Tarefas.Enums;
+using Tarefas.Servicos;
 
-namespace app_Tarefas.Models
+namespace Tarefas.Models;
+
+public class Comentario
 {
-    public class Comentario
+    public Comentario()
     {
-        public Comentario()
+        this.Data = DateTime.Now;
+    }
+
+    [PrimaryKey, AutoIncrement]
+    public int Id { get;set; }
+    public string Texto { get;set; }
+    public DateTime Data { get;set; }
+    public int TarefaId { get;set; }
+    public int UsuarioId { get;set; }
+
+    [Ignore]
+    public Usuario Usuario
+    {
+        get
         {
-            this.Data = DateTime.Now;
+            if(this.UsuarioId == 0) return null;
+            return UsuariosServico.Instancia().Todos().Find(u => u.Id == this.UsuarioId);
         }
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-        public string Texto { get; set; }
-        public string Descricao { get; set; }
-        public DateTime Data { get; set; }
-        public int TarefaId { get; set; }
-        public int UsuarioId { get; set; }
-        [Ignore]
-        public Usuario? Usuario
+    }
+
+    [Ignore]
+    public string NomeUsuario
+    {
+        get
         {
-            get
-            {
-                if (this.UsuarioId == 0) return null;
-                return UsuarioServico.Instancia().Todos().Find(u => u.Id == this.UsuarioId);
-            }
-        }
-        [Ignore]
-        public string NomeUsuario
-        {
-            get
-            {
-                if (this.Usuario == null) return "Sem Usuário";
-                return Usuario?.Nome;
-            }
+            if(this.Usuario == null) return "Sem Usuario";
+            return Usuario?.Nome;
         }
     }
 }

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Tarefas.Enums;
 
-namespace app_Tarefas.Models
+namespace Tarefas.Models;
+
+public class Usuario
 {
-    public class Usuario
-    {
-        public int Id { get; set; }
-        public string Nome { get; set; }
-    }
+    public int Id { get;set; }
+    public string Nome { get;set; }
 }

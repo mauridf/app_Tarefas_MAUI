@@ -1,14 +1,12 @@
-﻿namespace app_Tarefas
+﻿namespace Tarefas;
+
+public partial class App : Application
 {
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
+	public App()
+	{
+		InitializeComponent();
 
-            MainPage = new AppShell(); // Muda toda a página
-
-            //MainPage = new NavigationPage(new AppShell()); //Muda somente o frame e mantem o menu
-        }
-    }
+		MainPage = new AppShell(); // mudo totalmente minha pagina
+		// MainPage = new NavigationPage(new AppShell()); // mudo somente um frame referente ao menu
+	}
 }
